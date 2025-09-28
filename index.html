@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Given Seboka Leope - Portfolio</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+            color: white;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: -1;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1rem 2rem;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #00d2ff, #3a47d5);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: #00d2ff;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background: linear-gradient(45deg, #00d2ff, #3a47d5);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .section {
+            min-height: 100vh;
+            padding: 6rem 2rem 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #00d2ff, #3a47d5, #ff006e);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 20px rgba(0, 210, 255, 0.5); }
+            to { text-shadow: 0 0 30px rgba(58, 71, 213, 0.8); }
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.8;
+        }
+
+        .cta-button {
+            padding: 1rem 2rem;
+            background: linear-gradient(45deg, #00d2ff, #3a47d5);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 210, 255, 0.3);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            background: linear-gradient(45deg, #00d2ff, #3a47d5);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 3rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .about-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            opacity: 0.9;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .contact-item:hover {
+            transform: translateX(10px);
+            background: rgba(0, 210, 255, 0.1);
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .skill-category {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .skill-category:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 210, 255, 0.2);
+        }
+
+        .skill-category h3 {
+            color: #00d2ff;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .skill-list {
+            list-style: none;
+        }
+
+        .skill-list li {
+            padding: 0.5rem 0;
+            opacity: 0.8;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .skill-list li::before {
+            content: '▶';
+            position: absolute;
+            left: 0;
+            color: #00d2ff;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .project-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00d2ff, transparent);
+            transition: left 0.5s ease;
+        }
+
+        .project-card:hover::before {
+            left: 100%;
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 210, 255, 0.2);
+        }
+
+        .project-card h3 {
+            color: #00d2ff;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .project-date {
+            color: #3a47d5;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .project-description {
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .education-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .education-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: linear-gradient(to bottom, #00d2ff, #3a47d5);
+            border-radius: 2px;
+        }
+
+        .education-item h3 {
+            color: #00d2ff;
+            margin-bottom: 0.5rem;
+        }
+
+        .education-institution {
+            color: #3a47d5;
+            margin-bottom: 1rem;
+        }
+
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .shape {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .shape:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+        .shape:nth-child(2) { top: 60%; left: 80%; animation-delay: 2s; }
+        .shape:nth-child(3) { top: 80%; left: 20%; animation-delay: 4s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-10px); }
+            60% { transform: translateX(-50%) translateY(-5px); }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .about-content { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas-container"></div>
+    
+    <nav class="navbar">
+        <div class="logo">Given Leope</div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#education">Education</a></li>
+        </ul>
+    </nav>
+
+    <section id="home" class="section hero">
+        <div class="floating-shapes">
+            <div class="shape" style="width: 50px; height: 50px; background: linear-gradient(45deg, #00d2ff, #3a47d5); border-radius: 50%;"></div>
+            <div class="shape" style="width: 30px; height: 30px; background: linear-gradient(45deg, #3a47d5, #ff006e); clip-path: polygon(50% 0%, 0% 100%, 100% 100%);"></div>
+            <div class="shape" style="width: 40px; height: 40px; background: linear-gradient(45deg, #ff006e, #00d2ff); transform: rotate(45deg);"></div>
+        </div>
+        <h1>Given Seboka Leope</h1>
+        <p>Full-Stack Developer | IT Student | Problem Solver</p>
+        <a href="#about" class="cta-button">Explore My Work</a>
+        <div class="scroll-indicator">
+            <div style="width: 2px; height: 30px; background: linear-gradient(to bottom, #00d2ff, transparent); margin: 0 auto;"></div>
+        </div>
+    </section>
+
+    <section id="about" class="section">
+        <div class="container">
+            <h2 class="section-title">About Me</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>I'm a passionate IT student at Nelson Mandela University, expected to complete my Bachelor's in November 2025. With a strong foundation in full-stack development, I specialize in creating robust applications using modern technologies like ASP.NET Core, React, and Three.js.</p>
+                    <br>
+                    <p>My journey in technology is driven by curiosity and a desire to solve real-world problems through innovative software solutions. From hospital management systems to interactive 3D portfolios, I enjoy bringing ideas to life through code.</p>
+                </div>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <span>📧</span>
+                        <span>seboka7502@gmail.com</span>
+                    </div>
+                    <div class="contact-item">
+                        <span>📱</span>
+                        <span>076 404 3430</span>
+                    </div>
+                    <div class="contact-item">
+                        <span>🌐</span>
+                        <a href="https://www.linkedin.com/in/given-leope-b8a842336/" target="_blank" style="color: #00d2ff;">LinkedIn Profile</a>
+                    </div>
+                    <div class="contact-item">
+                        <span>🚀</span>
+                        <a href="https://github.com/mvKidow" target="_blank" style="color: #00d2ff;">GitHub Profile</a>
+                    </div>
+                    <div class="contact-item">
+                        <span>📍</span>
+                        <span>Dennilton, South Africa</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="skills" class="section">
+        <div class="container">
+            <h2 class="section-title">Technical Skills</h2>
+            <div class="skills-grid">
+                <div class="skill-category">
+                    <h3>Programming Languages</h3>
+                    <ul class="skill-list">
+                        <li>C# - Advanced</li>
+                        <li>Python - Intermediate</li>
+                        <li>JavaScript - Advanced</li>
+                        <li>SQL - Advanced</li>
+                    </ul>
+                </div>
+                <div class="skill-category">
+                    <h3>Frameworks & Libraries</h3>
+                    <ul class="skill-list">
+                        <li>ASP.NET Core</li>
+                        <li>Entity Framework Core</li>
+                        <li>React.js</li>
+                        <li>Three.js</li>
+                        <li>Tailwind CSS</li>
+                    </ul>
+                </div>
+                <div class="skill-category">
+                    <h3>Databases & Tools</h3>
+                    <ul class="skill-list">
+                        <li>SQL Server</li>
+                        <li>MySQL</li>
+                        <li>SSMS</li>
+                        <li>Dapper</li>
+                        <li>Vite</li>
+                    </ul>
+                </div>
+                <div class="skill-category">
+                    <h3>Development Areas</h3>
+                    <ul class="skill-list">
+                        <li>Full-Stack Development</li>
+                        <li>Database Design</li>
+                        <li>Windows Forms</li>
+                        <li>3D Web Development</li>
+                        <li>System Architecture</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects" class="section">
+        <div class="container">
+            <h2 class="section-title">Featured Projects</h2>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <h3>School Management System</h3>
+                    <div class="project-date">June 2023 – Present</div>
+                    <p class="project-description">
+                        A comprehensive full-stack Windows Forms application built with ASP.NET Core for managing students, modules, and lecturer records. Features a robust SQL Server database designed and implemented using SSMS, providing efficient data management and real-time updates for educational institutions.
+                    </p>
+                </div>
+                <div class="project-card">
+                    <h3>Hospital Management System</h3>
+                    <div class="project-date">April 2024 – Present</div>
+                    <p class="project-description">
+                        An advanced hospital ward management system designed for storing patient records, managing staff, and tracking hospital utilities. Built with a user-friendly interface featuring real-time updates and automation capabilities to streamline hospital operations and improve patient care.
+                    </p>
+                </div>
+                <div class="project-card">
+                    <h3>3D Portfolio Website</h3>
+                    <div class="project-date">June 2024 – Present</div>
+                    <p class="project-description">
+                        An interactive 3D portfolio website showcasing cutting-edge web development skills. Built using React, Three.js, Tailwind CSS, and Vite, featuring immersive 3D models and animations that demonstrate modern web development capabilities and creative problem-solving.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="education" class="section">
+        <div class="container">
+            <h2 class="section-title">Education</h2>
+            <div class="education-item">
+                <h3>Bachelor of Information Technology</h3>
+                <div class="education-institution">Nelson Mandela University, Port Elizabeth</div>
+                <p><strong>Expected Completion:</strong> November 2025</p>
+                <p>Pursuing advanced studies in information technology with focus on software development, database systems, and modern web technologies.</p>
+            </div>
+            <div class="education-item">
+                <h3>Diploma in Information Technology</h3>
+                <div class="education-institution">Nelson Mandela University, Port Elizabeth</div>
+                <p><strong>Completed:</strong> November 17, 2024</p>
+                <p>Comprehensive foundation in IT principles, programming fundamentals, database management, and software development methodologies.</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Three.js Scene Setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        // Create floating geometric shapes
+        const geometries = [
+            new THREE.BoxGeometry(1, 1, 1),
+            new THREE.SphereGeometry(0.7, 16, 16),
+            new THREE.ConeGeometry(0.7, 1.5, 8),
+            new THREE.TorusGeometry(0.7, 0.3, 8, 16)
+        ];
+
+        const materials = [
+            new THREE.MeshBasicMaterial({ 
+                color: 0x00d2ff, 
+                wireframe: true,
+                transparent: true,
+                opacity: 0.3
+            }),
+            new THREE.MeshBasicMaterial({ 
+                color: 0x3a47d5, 
+                wireframe: true,
+                transparent: true,
+                opacity: 0.3
+            }),
+            new THREE.MeshBasicMaterial({ 
+                color: 0xff006e, 
+                wireframe: true,
+                transparent: true,
+                opacity: 0.3
+            })
+        ];
+
+        const shapes = [];
+        for (let i = 0; i < 15; i++) {
+            const geometry = geometries[Math.floor(Math.random() * geometries.length)];
+            const material = materials[Math.floor(Math.random() * materials.length)];
+            const mesh = new THREE.Mesh(geometry, material);
+            
+            mesh.position.x = (Math.random() - 0.5) * 20;
+            mesh.position.y = (Math.random() - 0.5) * 20;
+            mesh.position.z = (Math.random() - 0.5) * 20;
+            
+            mesh.rotationSpeed = {
+                x: (Math.random() - 0.5) * 0.02,
+                y: (Math.random() - 0.5) * 0.02,
+                z: (Math.random() - 0.5) * 0.02
+            };
+            
+            shapes.push(mesh);
+            scene.add(mesh);
+        }
+
+        camera.position.z = 5;
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            shapes.forEach(shape => {
+                shape.rotation.x += shape.rotationSpeed.x;
+                shape.rotation.y += shape.rotationSpeed.y;
+                shape.rotation.z += shape.rotationSpeed.z;
+                
+                // Floating motion
+                shape.position.y += Math.sin(Date.now() * 0.001 + shape.position.x) * 0.01;
+            });
+            
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Mouse interaction
+        let mouseX = 0, mouseY = 0;
+        document.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+            mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+            
+            camera.position.x = mouseX * 0.5;
+            camera.position.y = mouseY * 0.5;
+        });
+
+        // Responsive handling
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Smooth scrolling for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Navbar scroll effect
+        let lastScrollTop = 0;
+        window.addEventListener('scroll', () => {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const navbar = document.querySelector('.navbar');
+            
+            if (scrollTop > lastScrollTop) {
+                navbar.style.transform = 'translateY(-100%)';
+            } else {
+                navbar.style.transform = 'translateY(0)';
+            }
+            lastScrollTop = scrollTop;
+        });
+
+        // Add intersection observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all sections
+        document.querySelectorAll('.section').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(50px)';
+            section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(section);
+        });
+
+        // Set home section to be visible initially
+        document.querySelector('#home').style.opacity = '1';
+        document.querySelector('#home').style.transform = 'translateY(0)';
+    </script>
+</body>
+</html>
